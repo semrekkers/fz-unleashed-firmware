@@ -6,6 +6,9 @@
 
 /**
  * @brief Initializes the serial port
+ * 
+ * Automatically disables Expansion module service to prevent interference.
+ * 
  * @param port The port to initialize (`"lpuart"` or `"start"`)
  * @param baudRate 
  * @version Added in JS SDK 0.1
@@ -53,6 +56,20 @@ export declare function read(length: number, timeout?: number): string | undefin
 export declare function readln(timeout?: number): string;
 
 /**
+ * @brief Read any available amount of data from the serial port
+ * 
+ * Can be useful to avoid starving your loop with small reads.
+ * 
+ * @param timeout The number of time, in milliseconds, after which this function
+ *                will give up and return nothing. If unset, the function will
+ *                wait forever.
+ * @returns The received data interpreted as ASCII, or `undefined` if 0 bytes
+ *          were read.
+ * @version Added in JS SDK 0.1
+ */
+export declare function readAny(timeout?: number): string | undefined;
+
+/**
  * @brief Reads data from the serial port
  * @param length The number of bytes to read
  * @param timeout The number of time, in milliseconds, after which this function
@@ -87,3 +104,9 @@ export declare function readBytes(length: number, timeout?: number): ArrayBuffer
  * @version Added in JS SDK 0.1
  */
 export declare function expect(patterns: string | number[] | string[] | number[][], timeout?: number): number | undefined;
+
+/**
+ * @brief Deinitializes the serial port, allowing multiple initializations per script run
+ * @version Added in JS SDK 0.1
+ */
+export declare function end(): void;

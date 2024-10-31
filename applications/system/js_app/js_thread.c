@@ -1,5 +1,7 @@
 #include <common/cs_dbg.h>
+#include <toolbox/path.h>
 #include <toolbox/stream/file_stream.h>
+#include <toolbox/strint.h>
 #include <loader/firmware_api/firmware_api.h>
 #include <flipper_application/api_hashtable/api_hashtable.h>
 #include <flipper_application/plugins/composite_resolver.h>
@@ -194,6 +196,27 @@ static void js_require(struct mjs* mjs) {
     mjs_return(mjs, req_object);
 }
 
+static void js_parse_int(struct mjs* mjs) {
+    const char* str;
+    JS_FETCH_ARGS_OR_RETURN(mjs, JS_AT_LEAST, JS_ARG_STR(&str));
+
+    int32_t base = 10;
+    if(mjs_nargs(mjs) >= 2) {
+        mjs_val_t base_arg = mjs_arg(mjs, 1);
+        if(!mjs_is_number(base_arg)) {
+            mjs_prepend_errorf(mjs, MJS_BAD_ARGS_ERROR, "Base must be a number");
+            mjs_return(mjs, MJS_UNDEFINED);
+        }
+        base = mjs_get_int(mjs, base_arg);
+    }
+
+    int32_t num;
+    if(strint_to_int32(str, NULL, &num, base) != StrintParseNoError) {
+        num = 0;
+    }
+    mjs_return(mjs, mjs_mk_number(mjs, num));
+}
+
 static void js_global_to_string(struct mjs* mjs) {
     int base = 10;
     if(mjs_nargs(mjs) > 1) base = mjs_get_int(mjs, mjs_arg(mjs, 1));
@@ -233,10 +256,30 @@ static int32_t js_thread(void* arg) {
     mjs_val_t global = mjs_get_global(mjs);
     mjs_val_t console_obj = mjs_mk_object(mjs);
 
+    if(worker->path) {
+        FuriString* dirpath = furi_string_alloc();
+        path_extract_dirname(furi_string_get_cstr(worker->path), dirpath);
+        mjs_set(
+            mjs,
+            global,
+            "__filename",
+            ~0,
+            mjs_mk_string(
+                mjs, furi_string_get_cstr(worker->path), furi_string_size(worker->path), true));
+        mjs_set(
+            mjs,
+            global,
+            "__dirname",
+            ~0,
+            mjs_mk_string(mjs, furi_string_get_cstr(dirpath), furi_string_size(dirpath), true));
+        furi_string_free(dirpath);
+    }
+
     JS_ASSIGN_MULTI(mjs, global) {
         JS_FIELD("print", MJS_MK_FN(js_print));
         JS_FIELD("delay", MJS_MK_FN(js_delay));
         JS_FIELD("toString", MJS_MK_FN(js_global_to_string));
+        JS_FIELD("parseInt", MJS_MK_FN(js_parse_int));
         JS_FIELD("ffi_address", MJS_MK_FN(js_ffi_address));
         JS_FIELD("require", MJS_MK_FN(js_require));
         JS_FIELD("console", console_obj);

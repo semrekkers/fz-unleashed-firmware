@@ -150,14 +150,6 @@ declare function delay(ms: number): void;
 declare function print(...args: any[]): void;
 
 /**
- * @brief Converts a number to a string
- * @param value The number to convert to a string
- * @param base Integer base (`2`...`16`), default: 10
- * @version Added in JS SDK 0.1
- */
-declare function toString(value: number, base?: number): string;
-
-/**
  * @brief Reads a JS value from a file
  * 
  * Reads a file at the specified path, interprets it as a JS value and returns
@@ -327,13 +319,44 @@ declare class String {
      * @version Added in JS SDK 0.1
      */
     at(index: number): number;
+    /**
+     * @brief Return index of first occurrence of substr within the string or `-1` if not found
+     * @param substr The string to search for
+     * @param fromIndex The index to start searching from
+     * @version Added in JS SDK 0.1
+     */
+    indexOf(substr: string, fromIndex?: number): number;
+    /**
+     * @brief Return a substring between two indices
+     * @param start The index to start substring at
+     * @param end The index to end substring at
+     * @version Added in JS SDK 0.1
+     */
+    slice(start: number, end?: number): string;
+    /**
+     * @brief Return this string transformed to upper case
+     * @version Added in JS SDK 0.1
+     */
+    toUpperCase(): string;
+    /**
+     * @brief Return this string transformed to lower case
+     * @version Added in JS SDK 0.1
+     */
+    toLowerCase(): string;
 }
 
 declare class Boolean { }
 
 declare class Function { }
 
-declare class Number { }
+declare class Number {
+    /**
+     * @brief Converts this number to a string
+     * @param base Integer base (`2`...`16`), default: 10
+     * @version Added in JS SDK 0.1
+     */
+    toString(base?: number): string;
+}
 
 declare class Object { }
 

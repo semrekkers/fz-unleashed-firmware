@@ -5,6 +5,8 @@
  */
 
 /** @version Added in JS SDK 0.1 */
+export function isEqual(a: number, b: number, tolerance: number): boolean;
+/** @version Added in JS SDK 0.1 */
 export function abs(n: number): number;
 /** @version Added in JS SDK 0.1 */
 export function acos(n: number): number;
@@ -33,6 +35,8 @@ export function exp(n: number): number;
 /** @version Added in JS SDK 0.1 */
 export function floor(n: number): number;
 /** @version Added in JS SDK 0.1 */
+export function log(n: number): number;
+/** @version Added in JS SDK 0.1 */
 export function max(n: number, m: number): number;
 /** @version Added in JS SDK 0.1 */
 export function min(n: number, m: number): number;
@@ -50,5 +54,7 @@ export function sqrt(n: number): number;
 export function trunc(n: number): number;
 /** @version Added in JS SDK 0.1 */
 declare const PI: number;
+/** @version Added in JS SDK 0.1 */
+declare const E: number;
 /** @version Added in JS SDK 0.1 */
 declare const EPSILON: number;
