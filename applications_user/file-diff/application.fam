@@ -1,0 +1,11 @@
+App(
+    appid="file_diff",
+    name="File Diff",
+    apptype=FlipperAppType.EXTERNAL,
+    requires=["gui"],
+    entry_point="file_diff_app",
+    stack_size=1 * 1024,
+    order=50,
+    fap_category="Tools",
+    fap_icon="icon.png",
+)
